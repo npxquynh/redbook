@@ -10,6 +10,8 @@ class ListSpec extends Specification {
     val defaultList    = List(1, 2, 3, 4, 5)
     val additionalList = List(10, 11, 12)
     val strList        = List("apple", "baby", "Cat", "Dog")
+
+    val isEvenFn: Int => Boolean = _ % 2 == 0
   }
 
   import Fixture._
@@ -93,7 +95,7 @@ class ListSpec extends Specification {
     /*
     foldRight(List(1,2,3), Nil:List[Int])(Cons(_,_))
     Then we will have the same list back
-     */
+    */
 
     List.foldRight(defaultList, Nil: List[Int])(Cons(_, _)) ==== defaultList
   }
@@ -211,7 +213,38 @@ class ListSpec extends Specification {
   }
 
   "Exercise 3.16 - Adding 1" in {
-    ok
+    List.addOne(defaultList) ==== List(2, 3, 4, 5, 6)
+  }
 
+  "Exercise 3.17 - Adding 1" in {
+    List.listDoubleToListString(List(1.3, 2.16, 10.20)) ==== List("1.3", "2.16", "10.2")
+  }
+
+  "Exercise 3.18 - map" in {
+    List.map(defaultList)(_ + 1) ==== List(2, 3, 4, 5, 6)
+  }
+
+  "Exercise 3.19 - filter" in {
+    List.filter1(defaultList)(isEvenFn) ==== List(2, 4)
+    List.filter(defaultList)(isEvenFn) ==== List(2, 4)
+  }
+
+  "Exercise 3.20 - flatMap" in {
+    List.flatMap(defaultList)(i => List(i, i)) ==== List(1, 1, 2, 2, 3, 3, 4, 4, 5, 5)
+  }
+
+  "Exercise 3.21 - filterWithFlatMap" in {
+    List.filterWithFlatMap(defaultList)(isEvenFn) ==== List.filter(defaultList)(isEvenFn)
+  }
+
+  "Exercise 3.22 - adding corresponding elements from 2 lists" in {
+    List.addTwoList(List(1, 2, 3), List(4, 5, 6)) ==== List(5, 7, 9)
+    List.addTwoList(List(1, 2, 3, 4, 5), List(4, 5, 6)) ==== List(5, 7, 9)
+    List.addTwoList(List(1, 2, 3), List(4, 5, 6, 7, 8, 9)) ==== List(5, 7, 9)
+  }
+
+  "Exercise 3.23 - zipWith" in {
+    List.zipWith(defaultList, additionalList)(_ + _) ==== List(11, 13, 15)
+    List.zipWith(List("a", "b"), List("1", "2"))((a1, a2) => s"$a1 : $a2") ==== List("a : 1", "b : 2")
   }
 }
