@@ -95,7 +95,7 @@ class SimpleListSpec extends Specification {
     /*
     foldRight(List(1,2,3), Nil:List[Int])(Cons(_,_))
     Then we will have the same list back
-    */
+     */
 
     SimpleList.foldRight(defaultList, Nil: SimpleList[Int])(Cons(_, _)) ==== defaultList
   }
@@ -245,6 +245,26 @@ class SimpleListSpec extends Specification {
 
   "Exercise 3.23 - zipWith" in {
     SimpleList.zipWith(defaultList, additionalList)(_ + _) ==== SimpleList(11, 13, 15)
-    SimpleList.zipWith(SimpleList("a", "b"), SimpleList("1", "2"))((a1, a2) => s"$a1 : $a2") ==== SimpleList("a : 1", "b : 2")
+    SimpleList.zipWith(SimpleList("a", "b"), SimpleList("1", "2"))((a1, a2) => s"$a1 : $a2") ==== SimpleList(
+      "a : 1",
+      "b : 2"
+    )
   }
+
+  "Exercise 3.24 - remove" in {
+    SimpleList.remove(defaultList, 2) ==== SimpleList(1, 3, 4, 5)
+    SimpleList.remove(defaultList, 3) ==== SimpleList(1, 2, 4, 5)
+    SimpleList.remove(defaultList, 5) ==== SimpleList(1, 2, 3, 4)
+    SimpleList.remove(SimpleList(2, 2, 2), 2) ==== SimpleList(2, 2)
+    SimpleList.remove(defaultList, 10) ==== defaultList
+    SimpleList.remove(SimpleList(), 10) ==== SimpleList()
+  }
+
+  "Exercise 3.24 - hasSubsequence" in {
+    SimpleList.hasSubsequence(defaultList, SimpleList()) ==== true
+    SimpleList.hasSubsequence(defaultList, SimpleList(1)) ==== true
+    SimpleList.hasSubsequence(defaultList, SimpleList(1, 2, 3)) ==== true
+    SimpleList.hasSubsequence(defaultList, SimpleList(1, 10)) ==== false
+  }
+
 }
