@@ -2,14 +2,14 @@ package redbook.chapter03
 
 import org.specs2.mutable.Specification
 
-class ListSpec extends Specification {
+class SimpleListSpec extends Specification {
 
   object Fixture {
-    val emptyList      = List()
-    val oneElementList = List(1)
-    val defaultList    = List(1, 2, 3, 4, 5)
-    val additionalList = List(10, 11, 12)
-    val strList        = List("apple", "baby", "Cat", "Dog")
+    val emptyList      = SimpleList()
+    val oneElementList = SimpleList(1)
+    val defaultList    = SimpleList(1, 2, 3, 4, 5)
+    val additionalList = SimpleList(10, 11, 12)
+    val strList        = SimpleList("apple", "baby", "Cat", "Dog")
 
     val isEvenFn: Int => Boolean = _ % 2 == 0
   }
@@ -17,11 +17,11 @@ class ListSpec extends Specification {
   import Fixture._
 
   "Exercise 3.1" in {
-    val x = List(1, 2, 3, 4, 5) match {
+    val x = SimpleList(1, 2, 3, 4, 5) match {
       case Cons(x, Cons(2, Cons(4, _)))          => x
       case Nil                                   => 42
       case Cons(x, Cons(y, Cons(3, Cons(4, _)))) => x + y
-      case Cons(h, t)                            => h + List.sum(t)
+      case Cons(h, t)                            => h + SimpleList.sum(t)
       case _                                     => 101
     }
 
@@ -30,58 +30,58 @@ class ListSpec extends Specification {
 
   "Exercise 3.2 - tail" >> {
     "for empty list" in {
-      List.tail(emptyList) ==== emptyList
+      SimpleList.tail(emptyList) ==== emptyList
     }
 
     "for list with 1 element" in {
-      List.tail(oneElementList) ==== Nil
+      SimpleList.tail(oneElementList) ==== Nil
     }
 
     "for list with multiple elements" in {
-      List.tail(defaultList) ==== List(2, 3, 4, 5)
+      SimpleList.tail(defaultList) ==== SimpleList(2, 3, 4, 5)
     }
   }
 
   "Exercise 3.3 - setHead" >> {
     "for empty list" in {
-      List.setHead(emptyList, 8) ==== emptyList
+      SimpleList.setHead(emptyList, 8) ==== emptyList
     }
 
     "for list with 1 element" in {
-      List.setHead(oneElementList, 8) ==== List(8)
+      SimpleList.setHead(oneElementList, 8) ==== SimpleList(8)
     }
 
     "for list with multiple elements" in {
-      List.setHead(defaultList, 8) ==== List(8, 2, 3, 4, 5)
+      SimpleList.setHead(defaultList, 8) ==== SimpleList(8, 2, 3, 4, 5)
     }
   }
 
   "Exercise 3.4 - drop" in {
-    List.drop(emptyList, 10) ==== emptyList
-    List.drop(oneElementList, 1) ==== emptyList
-    List.drop(defaultList, 1) ==== List(2, 3, 4, 5)
-    List.drop(defaultList, 2) ==== List(3, 4, 5)
-    List.drop(defaultList, 4) ==== List(5)
+    SimpleList.drop(emptyList, 10) ==== emptyList
+    SimpleList.drop(oneElementList, 1) ==== emptyList
+    SimpleList.drop(defaultList, 1) ==== SimpleList(2, 3, 4, 5)
+    SimpleList.drop(defaultList, 2) ==== SimpleList(3, 4, 5)
+    SimpleList.drop(defaultList, 4) ==== SimpleList(5)
   }
 
   "Exercise 3.5 - dropWhile" in {
     val isEven: Int => Boolean = (x) => x % 2 == 0
-    List.dropWhile(defaultList, isEven) ==== List(1, 3, 5)
-    List.dropWhile(defaultList, (x: Int) => false) ==== defaultList
-    List.dropWhile(defaultList, (x: Int) => true) ==== emptyList
+    SimpleList.dropWhile(defaultList, isEven) ==== SimpleList(1, 3, 5)
+    SimpleList.dropWhile(defaultList, (x: Int) => false) ==== defaultList
+    SimpleList.dropWhile(defaultList, (x: Int) => true) ==== emptyList
   }
 
   "Exercise 3.5 - dropWhileCurried" in {
     val isEven: Int => Boolean = (x) => x % 2 == 0
-    List.dropWhileCurried(defaultList)(isEven) ==== List(1, 3, 5)
-    List.dropWhileCurried(defaultList)(x => false) ==== defaultList
-    List.dropWhileCurried(defaultList)(_ => true) ==== emptyList
+    SimpleList.dropWhileCurried(defaultList)(isEven) ==== SimpleList(1, 3, 5)
+    SimpleList.dropWhileCurried(defaultList)(x => false) ==== defaultList
+    SimpleList.dropWhileCurried(defaultList)(_ => true) ==== emptyList
   }
 
   "Exercise 3.6 - init" in {
-    List.init(emptyList) ==== emptyList
-    List.init(oneElementList) ==== emptyList
-    List.init(defaultList) ==== List(1, 2, 3, 4)
+    SimpleList.init(emptyList) ==== emptyList
+    SimpleList.init(oneElementList) ==== emptyList
+    SimpleList.init(defaultList) ==== SimpleList(1, 2, 3, 4)
   }
 
   "Exercise 3.7 - early termination is not possible" in {
@@ -97,13 +97,13 @@ class ListSpec extends Specification {
     Then we will have the same list back
     */
 
-    List.foldRight(defaultList, Nil: List[Int])(Cons(_, _)) ==== defaultList
+    SimpleList.foldRight(defaultList, Nil: SimpleList[Int])(Cons(_, _)) ==== defaultList
   }
 
   "Exercise 3.9 - length" in {
-    List.length(emptyList) ==== 0
-    List.length(oneElementList) ==== 1
-    List.length(defaultList) ==== 5
+    SimpleList.length(emptyList) ==== 0
+    SimpleList.length(oneElementList) ==== 1
+    SimpleList.length(defaultList) ==== 5
   }
 
   "Exercise 3.10 - tail-recursive foldLeft" in {
@@ -121,20 +121,20 @@ class ListSpec extends Specification {
   }
 
   "Exercise 3.11 - lengthWithFoldLeft" in {
-    List.lengthWithFoldLeft(defaultList) ==== List.length(defaultList)
+    SimpleList.lengthWithFoldLeft(defaultList) ==== SimpleList.length(defaultList)
   }
 
   "Exercise 3.12 - reverse" in {
-    List.reverse(defaultList) ==== List(5, 4, 3, 2, 1)
+    SimpleList.reverse(defaultList) ==== SimpleList(5, 4, 3, 2, 1)
   }
 
   "Exercise 3.13 - write foldLeft in terms of foldRight" in {
     // foldLeft and foldRight are the same for associative + commutative function
-    List.foldLeftInTermsOfFoldRight(defaultList, 0)(_ + _) ==== List.foldLeft(defaultList, 0)(_ + _)
+    SimpleList.foldLeftInTermsOfFoldRight(defaultList, 0)(_ + _) ==== SimpleList.foldLeft(defaultList, 0)(_ + _)
 
     // string concatenation is associative, but not commutative
     // Hence string concatenation is a good method to test
-    List.foldLeftInTermsOfFoldRight(strList, "")(_ + _) ==== List.foldLeft(strList, "")(_ + _)
+    SimpleList.foldLeftInTermsOfFoldRight(strList, "")(_ + _) ==== SimpleList.foldLeft(strList, "")(_ + _)
     ok
   }
 
@@ -199,52 +199,52 @@ class ListSpec extends Specification {
   }
 
   "Exericise 3.14 - append in terms of foldRight" in {
-    List.append(defaultList, additionalList) ==== List.appendWithFoldRight(defaultList, additionalList)
+    SimpleList.append(defaultList, additionalList) ==== SimpleList.appendWithFoldRight(defaultList, additionalList)
   }
 
   "Exericise 3.14 - append in terms of foldLeft" in {
-    List.append(defaultList, additionalList) ==== List.appendWithFoldLeft(defaultList, additionalList)
-    List.appendWithFoldLeft(defaultList, additionalList) ==== List(1, 2, 3, 4, 5, 10, 11, 12)
+    SimpleList.append(defaultList, additionalList) ==== SimpleList.appendWithFoldLeft(defaultList, additionalList)
+    SimpleList.appendWithFoldLeft(defaultList, additionalList) ==== SimpleList(1, 2, 3, 4, 5, 10, 11, 12)
   }
 
   "Exercise 3.15 - concatenates a list of lists into a single list with linear runtime" in {
-    val listOfLists = List(defaultList, additionalList, List(21, 22))
-    List.concatenate(listOfLists) ==== List(1, 2, 3, 4, 5, 10, 11, 12, 21, 22)
+    val listOfLists = SimpleList(defaultList, additionalList, SimpleList(21, 22))
+    SimpleList.concatenate(listOfLists) ==== SimpleList(1, 2, 3, 4, 5, 10, 11, 12, 21, 22)
   }
 
   "Exercise 3.16 - Adding 1" in {
-    List.addOne(defaultList) ==== List(2, 3, 4, 5, 6)
+    SimpleList.addOne(defaultList) ==== SimpleList(2, 3, 4, 5, 6)
   }
 
   "Exercise 3.17 - Adding 1" in {
-    List.listDoubleToListString(List(1.3, 2.16, 10.20)) ==== List("1.3", "2.16", "10.2")
+    SimpleList.listDoubleToListString(SimpleList(1.3, 2.16, 10.20)) ==== SimpleList("1.3", "2.16", "10.2")
   }
 
   "Exercise 3.18 - map" in {
-    List.map(defaultList)(_ + 1) ==== List(2, 3, 4, 5, 6)
+    SimpleList.map(defaultList)(_ + 1) ==== SimpleList(2, 3, 4, 5, 6)
   }
 
   "Exercise 3.19 - filter" in {
-    List.filter1(defaultList)(isEvenFn) ==== List(2, 4)
-    List.filter(defaultList)(isEvenFn) ==== List(2, 4)
+    SimpleList.filter1(defaultList)(isEvenFn) ==== SimpleList(2, 4)
+    SimpleList.filter(defaultList)(isEvenFn) ==== SimpleList(2, 4)
   }
 
   "Exercise 3.20 - flatMap" in {
-    List.flatMap(defaultList)(i => List(i, i)) ==== List(1, 1, 2, 2, 3, 3, 4, 4, 5, 5)
+    SimpleList.flatMap(defaultList)(i => SimpleList(i, i)) ==== SimpleList(1, 1, 2, 2, 3, 3, 4, 4, 5, 5)
   }
 
   "Exercise 3.21 - filterWithFlatMap" in {
-    List.filterWithFlatMap(defaultList)(isEvenFn) ==== List.filter(defaultList)(isEvenFn)
+    SimpleList.filterWithFlatMap(defaultList)(isEvenFn) ==== SimpleList.filter(defaultList)(isEvenFn)
   }
 
   "Exercise 3.22 - adding corresponding elements from 2 lists" in {
-    List.addTwoList(List(1, 2, 3), List(4, 5, 6)) ==== List(5, 7, 9)
-    List.addTwoList(List(1, 2, 3, 4, 5), List(4, 5, 6)) ==== List(5, 7, 9)
-    List.addTwoList(List(1, 2, 3), List(4, 5, 6, 7, 8, 9)) ==== List(5, 7, 9)
+    SimpleList.addTwoList(SimpleList(1, 2, 3), SimpleList(4, 5, 6)) ==== SimpleList(5, 7, 9)
+    SimpleList.addTwoList(SimpleList(1, 2, 3, 4, 5), SimpleList(4, 5, 6)) ==== SimpleList(5, 7, 9)
+    SimpleList.addTwoList(SimpleList(1, 2, 3), SimpleList(4, 5, 6, 7, 8, 9)) ==== SimpleList(5, 7, 9)
   }
 
   "Exercise 3.23 - zipWith" in {
-    List.zipWith(defaultList, additionalList)(_ + _) ==== List(11, 13, 15)
-    List.zipWith(List("a", "b"), List("1", "2"))((a1, a2) => s"$a1 : $a2") ==== List("a : 1", "b : 2")
+    SimpleList.zipWith(defaultList, additionalList)(_ + _) ==== SimpleList(11, 13, 15)
+    SimpleList.zipWith(SimpleList("a", "b"), SimpleList("1", "2"))((a1, a2) => s"$a1 : $a2") ==== SimpleList("a : 1", "b : 2")
   }
 }
