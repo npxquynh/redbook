@@ -30,19 +30,60 @@ class TreeSpec extends Specification {
   }
 
   "Exercise 3.27 - depth" in {
-    Tree.depth(oneNodeTree) ==== 0
-    Tree.depth(defaultTree) ==== 2
-    Tree.depth(defaultIntTree) ==== 3
+    Tree.depth(oneNodeTree) ==== 1
+    Tree.depth(defaultTree) ==== 3
+    Tree.depth(defaultIntTree) ==== 4
   }
 
-  "Exercise 3.28 - map" in {
+  "Exercise 3.28 - map - string length" in {
     Tree.map(defaultTree)(_.size) ==== Branch(
       Branch(Leaf(5), Leaf(3)),
       Branch(Leaf(9), Leaf(6))
     )
   }
 
+  "Exercise 3.29 - generalSizeMaxDepth" in {
+    // size
+    val leafSizeFn: Leaf[Int] => Int     = _ => 1
+    val combineSizeFn: (Int, Int) => Int = _ + _
+    val generalSizeFn                    = Tree.generalSizeMaxDepth(leafSizeFn, combineSizeFn) _
+    generalSizeFn(defaultIntTree) ==== 5
+
+    // maximum
+    val leafMaximumFn: Leaf[Int] => Int     = _.value
+    val combineMaximumFn: (Int, Int) => Int = _.max(_)
+    val generalMaximumFn                    = Tree.generalSizeMaxDepth(leafMaximumFn, combineMaximumFn) _
+    generalMaximumFn(defaultIntTree) ==== 100
+
+    // depth
+    val leafDepthFn: Leaf[Int] => Int     = _ => 1
+    val combineDepthFn: (Int, Int) => Int = 1 + _.max(_)
+    val generalDepthFn                    = Tree.generalSizeMaxDepth(leafDepthFn, combineDepthFn) _
+    generalDepthFn(oneNodeTree) ==== 1
+    generalDepthFn(defaultIntTree) ==== 4
+  }
+
   "Exercise 3.29 - fold" in {
-    ok
+    // size
+    val leafSizeFn: Leaf[Int] => Int     = _ => 1
+    val combineSizeFn: (Int, Int) => Int = _ + _
+    Tree.fold(defaultIntTree, leafSizeFn)(combineSizeFn) ==== 5
+
+    // maximum
+    val leafMaximumFn: Leaf[Int] => Int     = _.value
+    val combineMaximumFn: (Int, Int) => Int = _.max(_)
+    Tree.fold(defaultIntTree, leafMaximumFn)(combineMaximumFn) ==== 100
+
+    // depth
+    Tree.generalDepth(oneNodeTree) ==== Tree.depth(oneNodeTree)
+    Tree.generalDepth(defaultIntTree) ==== Tree.depth(defaultIntTree)
+
+    // map
+    val anotherTree: Tree[String] = Branch(
+      Branch(Leaf("alice"), Branch(Leaf("bob"), Leaf("charlotte"))),
+      Branch(Leaf("daniel"), Leaf("emma"))
+    )
+    Tree.generalMap(defaultTree)(_.size) ==== Tree.map(defaultTree)(_.size)
+    Tree.generalMap(anotherTree)(_.size) ==== Tree.map(anotherTree)(_.size)
   }
 }

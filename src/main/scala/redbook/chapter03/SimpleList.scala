@@ -203,5 +203,4 @@ object SimpleList {
 
     helper(sup, sub)
   }
-
 }
