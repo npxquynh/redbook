@@ -37,4 +37,22 @@ object Utils {
   // This is the population variance
   def variance(xs: Seq[Double]): Option[Double] =
     mean(xs).flatMap(m => mean(xs.map(x => math.pow(x - m, 2))))
+
+  // Exercise 4.3
+  def lift[A, B](f: A => B): Option[A] => Option[B] = _ map f
+
+  // val lift2[A,B,C](f: (A, B) => C) => (Option[A], Option[B]) => Option[C] =
+  def map2[A, B, C](a: Option[A], b: Option[B])(f: (A, B) => C): Option[C] = a match {
+    case None         => None
+    case Some(aValue) => b.map(bValue => f(aValue, bValue))
+  }
+
+  // Exercise 4.4
+  def sequence[A](as: List[Option[A]]): Option[List[A]] = {
+    val z: Option[List[A]] = Some(List.empty[A])
+    val fn: (Option[A], Option[List[A]]) => Option[List[A]] = (optionA, optionList) =>
+      map2(optionA, optionList)((a, l) => a :: l)
+
+    as.foldRight(z)(fn)
+  }
 }

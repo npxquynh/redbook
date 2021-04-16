@@ -30,4 +30,19 @@ class OptionSpec extends Specification {
     Utils.variance(xs) ==== Some(2.0)
     Utils.variance(Seq.empty[Double]) ==== None
   }
+
+  "Exercise 4.3 - map2" in {
+    val addFn: (Int, Int) => Int = _ + _
+    Utils.map2(Some(1), Some(3))(addFn) ==== Some(4)
+    Utils.map2(None, Some(3))(addFn) ==== None
+    Utils.map2(Some(1), None)(addFn) ==== None
+    Utils.map2(None, None)(addFn) ==== None
+  }
+
+  "Exercise 4.4 - sequence" in {
+    Utils.sequence(List(None)) ==== None
+    Utils.sequence(List(Some(1), Some(2), Some(3))) ==== Some(List(1,2,3))
+    Utils.sequence(List(Some(1), None, Some(3))) ==== None
+    Utils.sequence(List(Some(1), None, None)) ==== None
+  }
 }
