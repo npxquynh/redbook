@@ -40,9 +40,17 @@ class OptionSpec extends Specification {
   }
 
   "Exercise 4.4 - sequence" in {
+    Utils.sequence(Nil) ==== Some(Nil)
     Utils.sequence(List(None)) ==== None
     Utils.sequence(List(Some(1), Some(2), Some(3))) ==== Some(List(1,2,3))
     Utils.sequence(List(Some(1), None, Some(3))) ==== None
     Utils.sequence(List(Some(1), None, None)) ==== None
+  }
+
+  "Exercise 4.5 - traverse" in {
+    Utils.simpleTraverse(List(Some(1), Some(2), Some(3)))(_.map(_ * 10)) ==== Some(List(10, 20, 30))
+    Utils.traverse(List(Some(1), Some(2), Some(3)))(_.map(_ * 10)) ==== Some(List(10, 20, 30))
+
+    Utils.sequenceInTermOfTraverse(List(Some(1), Some(2), Some(3))) ==== Utils.sequence(List(Some(1), Some(2), Some(3)))
   }
 }

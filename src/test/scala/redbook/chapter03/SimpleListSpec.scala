@@ -264,6 +264,7 @@ class SimpleListSpec extends Specification {
     SimpleList.hasSubsequence(defaultList, SimpleList()) ==== true
     SimpleList.hasSubsequence(defaultList, SimpleList(1)) ==== true
     SimpleList.hasSubsequence(defaultList, SimpleList(1, 2, 3)) ==== true
+    SimpleList.hasSubsequence(defaultList, SimpleList(2, 1, 3)) ==== true
     SimpleList.hasSubsequence(defaultList, SimpleList(1, 10)) ==== false
   }
 

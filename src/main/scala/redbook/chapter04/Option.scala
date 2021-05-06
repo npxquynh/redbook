@@ -8,7 +8,7 @@ trait Option[+A] {
     case Some(a) => Some(f(a))
   }
 
-  def flatMap[B](f: A => Option[B]): Option[B] = this.map(f).getOrElse(None)
+  def flatMap[B](f: A => Option[B]): Option[B] = map(f).getOrElse(None)
 
   def getOrElse[B >: A](default: => B): B = this match {
     case None    => default
@@ -42,12 +42,20 @@ object Utils {
   def lift[A, B](f: A => B): Option[A] => Option[B] = _ map f
 
   // val lift2[A,B,C](f: (A, B) => C) => (Option[A], Option[B]) => Option[C] =
-  def map2[A, B, C](a: Option[A], b: Option[B])(f: (A, B) => C): Option[C] = a match {
-    case None         => None
-    case Some(aValue) => b.map(bValue => f(aValue, bValue))
+  def map2[A, B, C](a: Option[A], b: Option[B])(f: (A, B) => C): Option[C] = (a, b) match {
+    case (Some(aValue), Some(bValue)) => Some(f(aValue, bValue))
+    case _                            => None
   }
 
   // Exercise 4.4
+  def sequenceOld[A](as: List[Option[A]]): Option[List[A]] = {
+    val z: Option[List[A]] = Some(List.empty[A])
+    val fn: (Option[A], Option[List[A]]) => Option[List[A]] = (optionA, optionList) =>
+      map2(optionA, optionList)((a, l) => a :: l)
+
+    as.foldRight(z)(fn)
+  }
+
   def sequence[A](as: List[Option[A]]): Option[List[A]] = {
     val z: Option[List[A]] = Some(List.empty[A])
     val fn: (Option[A], Option[List[A]]) => Option[List[A]] = (optionA, optionList) =>
@@ -55,4 +63,21 @@ object Utils {
 
     as.foldRight(z)(fn)
   }
+
+  // Exercise 4.5
+  def simpleTraverse[A, B](as: List[A])(f: A => Option[B]): Option[List[B]] = sequence(as.map(f))
+
+  def traverse[A, B](as: List[A])(f: A => Option[B]): Option[List[B]] = {
+
+    val z: Option[List[B]] = Some(List.empty[B])
+    val g: (A, Option[List[B]]) => Option[List[B]] = (a, maybeListB) =>
+      for {
+        listB <- maybeListB
+        b     <- f(a)
+      } yield (b :: listB)
+
+    as.foldRight(z)(g)
+  }
+
+  def sequenceInTermOfTraverse[A](as: List[Option[A]]): Option[List[A]] = traverse(as)(identity)
 }

@@ -172,12 +172,12 @@ object SimpleList {
     map(reverse(helper(l1, l2, Nil: SimpleList[(A, A)])))(x => x match { case (a1, a2) => f(a1, a2) })
   }
 
-  // 3.24
   def exists[A](as: SimpleList[A], item: A): Boolean = as match {
     case Nil        => false
     case Cons(h, t) => if (h == item) true else exists(t, item)
   }
 
+  // 3.24
   def remove[A](as: SimpleList[A], item: A): SimpleList[A] = {
     def helper[A](as: SimpleList[A], item: A, result: SimpleList[A]): SimpleList[A] = as match {
       case Nil => result
@@ -192,6 +192,7 @@ object SimpleList {
   }
 
   def hasSubsequence[A](sup: SimpleList[A], sub: SimpleList[A]): Boolean = {
+    @tailrec
     def helper[A](sup: SimpleList[A], sub: SimpleList[A]): Boolean = sub match {
       case Nil => true
       case Cons(h, t) => {
@@ -203,4 +204,18 @@ object SimpleList {
 
     helper(sup, sub)
   }
+
+  /*
+
+  super: 1, 2, 3, 3, 4
+  sub: 3, 3, 1, 5
+
+  super:
+    1, 2, 3, 3, 4
+    1, 2, 3, 4 <== remove the sub[0] = 3
+    1, 2, 4 <== remove the sub[1] = 3
+    2, 4 <== remove the sub[2] = 1
+    2, 4 <== remove the sub[3] = 5
+
+  */
 }
