@@ -68,15 +68,9 @@ object Utils {
   def simpleTraverse[A, B](as: List[A])(f: A => Option[B]): Option[List[B]] = sequence(as.map(f))
 
   def traverse[A, B](as: List[A])(f: A => Option[B]): Option[List[B]] = {
-
     val z: Option[List[B]] = Some(List.empty[B])
-    val g: (A, Option[List[B]]) => Option[List[B]] = (a, maybeListB) =>
-      for {
-        listB <- maybeListB
-        b     <- f(a)
-      } yield (b :: listB)
 
-    as.foldRight(z)(g)
+    as.foldRight(z)((a, acc) => map2(f(a), acc)(_ :: _))
   }
 
   def sequenceInTermOfTraverse[A](as: List[Option[A]]): Option[List[A]] = traverse(as)(identity)
